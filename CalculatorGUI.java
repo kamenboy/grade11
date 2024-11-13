@@ -97,7 +97,7 @@ public class CalculatorGUI {
                     label.setText(String.valueOf(num1 / num2));
                     break;
                 } else {
-                    label.setText("Invalid input");
+                    label.setText("Invalid input. Not a number. ");
                 }
                 break;
         }
