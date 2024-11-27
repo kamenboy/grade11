@@ -1,4 +1,4 @@
-public class Main {
+public class HonorStudentEmailSystem {
     public static void main(String[] args) {
         Student s1 = new Student("Kamen", "Nikolov", 11, 3.93);
         Student s2 = new Student("Bogdan", "Nakov", 11, 3.23);
