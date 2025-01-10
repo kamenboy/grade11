@@ -11,17 +11,19 @@ public class Main {
         JFrame frame = new JFrame("BMI Calculator");
         frame.setTitle("BMI Calculator");
         frame.setSize(1000, 700);
-        frame.getContentPane().setBackground(Color.blue);
+        frame.getContentPane().setBackground(Color.decode("#ADD8E6"));
         frame.setLayout(null);
 
         JTextField text1 = new JTextField("BMI Calculator", 3);
         text1.setBounds(400, 10, 200, 30);
+        text1.setFont(text1.getFont().deriveFont(Font.BOLD, 14f));
         text1.setEditable(false);
         text1.setHorizontalAlignment(JTextField.CENTER);
         frame.add(text1);
 
         JTextField heightFieldText = new JTextField("Enter Height(cm):");
         heightFieldText.setBounds(250, 65, 200, 30);
+        heightFieldText.setFont(heightFieldText.getFont().deriveFont(Font.BOLD, 14f));
         heightFieldText.setHorizontalAlignment(JTextField.CENTER);
         heightFieldText.setEditable(false);
         frame.add(heightFieldText);
@@ -33,6 +35,7 @@ public class Main {
         JTextField weightFieldText = new JTextField("Enter weight(kg):");
         weightFieldText.setBounds(550, 65, 200, 30);
         weightFieldText.setHorizontalAlignment(JTextField.CENTER);
+        weightFieldText.setFont(weightFieldText.getFont().deriveFont(Font.BOLD, 14f));
         weightFieldText.setEditable(false);
         frame.add(weightFieldText);
 
