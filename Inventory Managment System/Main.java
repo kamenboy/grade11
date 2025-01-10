@@ -67,6 +67,10 @@ public class Main {
         displayProductsButton.setBounds(650, 150, 200, 50);
         frame.add(displayProductsButton);
 
+        JButton clearTextField = new JButton("Clear Fields");
+        clearTextField.setBounds(5, 5, 150, 40);
+        frame.add(clearTextField);
+
         // display area
         displayArea = new JTextArea();
         displayArea.setBounds(150, 250, 700, 400);
@@ -80,17 +84,26 @@ public class Main {
                 if (Inventory.forbid) {
                     displayArea.setText(" ");
                     JOptionPane.showMessageDialog(null, "You can't add product. Inventory is full.");
-                    System.out.println(Inventory.forbid);
+                } else if (!isValidNumber(priceField.getText()) || !isValidNumber(quantityField.getText())) {
+                    JOptionPane.showMessageDialog(frame, "Please enter valid numbers!", "Input Error", JOptionPane.ERROR_MESSAGE);
+                } else if (priceFieldText.getText().equals("") || qtyFieldText.getText().equals("")) {
+                    JOptionPane.showMessageDialog(frame, "You can't leave blank spaces!", "Input Error", JOptionPane.ERROR_MESSAGE);
+
+                } else if (priceFieldText.getText().equals("0") || qtyFieldText.getText().equals("0")) {
+                    JOptionPane.showMessageDialog(frame, "Price or Qty. can't be zero!", "Input Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     String name = nameField.getText();
                     double price = Double.parseDouble(priceField.getText());
                     int quantity = Integer.parseInt(quantityField.getText());
-                    inventory.addProduct(name, price, quantity);
-                    displayArea.setText("Product added: " + name + " - Price: " + price + " - Quantity: " + quantity);
-                    nameField.setText("");
-                    priceField.setText("");
-                    quantityField.setText("");
-                    System.out.println(Inventory.forbid);
+                    if (price < 0 && quantity < 0) {
+                        JOptionPane.showMessageDialog(frame, "Price or Quantity can't be negative!", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        inventory.addProduct(name, price, quantity);
+                        displayArea.setText("Product added: " + name + " - Price: " + price + " - Quantity: " + quantity);
+                        nameField.setText("");
+                        priceField.setText("");
+                        quantityField.setText("");
+                    }
                 }
             }
         });
@@ -116,7 +129,28 @@ public class Main {
             }
         });
 
+        clearTextField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                nameField.setText("");
+                priceField.setText("");
+                quantityField.setText("");
+            }
+        });
+
         frame.setVisible(true);
+    }
+
+    public static boolean isValidNumber(String str) {
+        if (str == null || str.trim().isEmpty()) {
+            return false; // for when input is empty or null
+        }
+        for (char c : str.toCharArray()) {
+            if (!Character.isDigit(c) && c != '.') {
+                return false; // case when invalid character found
+            }
+        }
+        return true; // all characters are valid
     }
 }
 
