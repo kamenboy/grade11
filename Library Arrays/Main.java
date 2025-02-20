@@ -39,7 +39,7 @@ public class Main {
                         double change = insertedMoney - bookPrices[selection - 1];
                         System.out.println("Item dispensed: " + bookNames[selection - 1]);
                         System.out.println("Balance left: $" + change);
-
+                        displayInventory();
                         running = false;
                     } else {
                         System.out.println("Insufficient funds. Please insert more money.");
