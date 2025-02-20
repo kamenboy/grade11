@@ -12,12 +12,10 @@ public class Main {
         boolean running = true;
         System.out.println("\nHello! Welcome to Kamen's Bookstore!\n Type 0 at any time to exit!");
 
-
-
         while (running) {
             System.out.println("Are you looking for a specific book? If you aren't, just type NO.\n" +
                     " If you are, please type the name of the book you wish to search for: ");
-            String input = scanner.next();
+            String input = scanner.nextLine();
 
             checkAvailability(input);
             if(input.equalsIgnoreCase("no")) {
@@ -41,7 +39,6 @@ public class Main {
                         double change = insertedMoney - bookPrices[selection - 1];
                         System.out.println("Item dispensed: " + bookNames[selection - 1]);
                         System.out.println("Balance left: $" + change);
-
 
                         running = false;
                     } else {
