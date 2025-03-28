@@ -3,77 +3,90 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 class Movie {
-    private String title;
-    private String genre;
+    String title;
+    String genre;
 
     public Movie(String title, String genre) {
         this.title = title;
         this.genre = genre;
     }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
 }
 
 public class Main extends JFrame {
     private ArrayList<Movie> movies = new ArrayList<>();
-    private JTable movieTable;
     private DefaultTableModel tableModel;
     private JTextField titleField, searchField;
     private JComboBox<String> genreBox;
     private JLabel countLabel;
+    private JTable movieTable;
 
     public Main() {
-        setTitle("Movie Collection Manager");
-        setSize(600, 400);
+        setTitle("Movie Manager");
+        setSize(500, 300);
         setLayout(new BorderLayout());
 
-        // Top panel for input and search
         JPanel inputPanel = new JPanel(new GridLayout(2, 1));
-        JPanel addPanel = new JPanel(new FlowLayout());
-        titleField = new JTextField(15);
+        JPanel addMoviePanel = new JPanel();
+        titleField = new JTextField(10);
         genreBox = new JComboBox<>(new String[]{"Action", "Comedy", "Horror", "Drama"});
-        JButton addButton = new JButton("Add Movie");
-        addPanel.add(new JLabel("Title:"));
-        addPanel.add(titleField);
-        addPanel.add(new JLabel("Genre:"));
-        addPanel.add(genreBox);
-        addPanel.add(addButton);
-        inputPanel.add(addPanel);
+        JButton addButton = new JButton("Add");
+        addMoviePanel.add(new JLabel("Title:"));
+        addMoviePanel.add(titleField);
+        addMoviePanel.add(new JLabel("Genre:"));
+        addMoviePanel.add(genreBox);
+        addMoviePanel.add(addButton);
+        inputPanel.add(addMoviePanel);
 
-        JPanel searchPanel = new JPanel(new FlowLayout());
-        searchField = new JTextField(15);
-        JButton searchButton = new JButton("Search");
-        searchPanel.add(new JLabel("Search:"));
-        searchPanel.add(searchField);
-        searchPanel.add(searchButton);
-        inputPanel.add(searchPanel);
+        JPanel sortPanel = new JPanel();
+        JButton sortTitleButton = new JButton("Sort by Title");
+        JButton sortGenreButton = new JButton("Sort by Genre");
+        sortPanel.add(sortTitleButton);
+        sortPanel.add(sortGenreButton);
+        inputPanel.add(sortPanel);
         add(inputPanel, BorderLayout.NORTH);
 
         tableModel = new DefaultTableModel(new String[]{"Title", "Genre"}, 0);
         movieTable = new JTable(tableModel);
         add(new JScrollPane(movieTable), BorderLayout.CENTER);
 
-        JPanel actionPanel = new JPanel(new FlowLayout());
-        JButton sortTitleButton = new JButton("Sort by Title");
-        JButton sortGenreButton = new JButton("Sort by Genre");
-        countLabel = new JLabel("Total Movies: 0");
-        actionPanel.add(sortTitleButton);
-        actionPanel.add(sortGenreButton);
-        actionPanel.add(countLabel);
-        add(actionPanel, BorderLayout.SOUTH);
-        addButton.addActionListener(e -> addMovie());
-        sortTitleButton.addActionListener(e -> sortMoviesByTitle());
-        sortGenreButton.addActionListener(e -> sortMoviesByGenre());
-        searchButton.addActionListener(e -> searchMovie());
+        JPanel bottomPanel = new JPanel();
+        countLabel = new JLabel("Movies: 0");
+        bottomPanel.add(countLabel);
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        JPanel searchPanel = new JPanel();
+        searchField = new JTextField(10);
+        JButton searchButton = new JButton("Search");
+        searchPanel.add(new JLabel("Search:"));
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+        add(searchPanel, BorderLayout.AFTER_LAST_LINE);
+
+        addButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                addMovie();
+            }
+        });
+
+        sortTitleButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sortMoviesByTitle();
+            }
+        });
+
+        sortGenreButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sortMoviesByGenre();
+            }
+        });
+
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                searchMovie();
+            }
+        });
     }
 
     private void addMovie() {
@@ -81,35 +94,48 @@ public class Main extends JFrame {
         String genre = (String) genreBox.getSelectedItem();
         if (!title.isEmpty()) {
             movies.add(new Movie(title, genre));
-            updateTable();
+            tableModel.addRow(new Object[]{title, genre});
+            countLabel.setText("Movies: " + movies.size());
             titleField.setText("");
         }
     }
 
-    private void updateTable() {
-        tableModel.setRowCount(0);
-        for (Movie movie : movies) {
-            tableModel.addRow(new Object[]{movie.getTitle(), movie.getGenre()});
-        }
-        countLabel.setText("Total Movies: " + movies.size());
-    }
-
     private void sortMoviesByTitle() {
-        movies.sort(Comparator.comparing(Movie::getTitle));
+        int n = movies.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (movies.get(j).title.compareTo(movies.get(j + 1).title) > 0) {
+                    Movie temp = movies.get(j);
+                    movies.set(j, movies.get(j + 1));
+                    movies.set(j + 1, temp);
+                }
+            }
+        }
         updateTable();
     }
 
     private void sortMoviesByGenre() {
-        movies.sort(Comparator.comparing(Movie::getGenre));
+        int n = movies.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (movies.get(j).genre.compareTo(movies.get(j + 1).genre) > 0) {
+                    Movie temp = movies.get(j);
+                    movies.set(j, movies.get(j + 1));
+                    movies.set(j + 1, temp);
+                }
+            }
+        }
         updateTable();
     }
 
     private void searchMovie() {
         String searchTitle = searchField.getText().trim().toLowerCase();
-        if (searchTitle.isEmpty()) return;
+        if (searchTitle.isEmpty()) {
+            return;
+        }
 
         for (int i = 0; i < movies.size(); i++) {
-            if (movies.get(i).getTitle().toLowerCase().contains(searchTitle)) {
+            if (movies.get(i).title.toLowerCase().contains(searchTitle)) {
                 movieTable.setRowSelectionInterval(i, i);
                 movieTable.scrollRectToVisible(new Rectangle(movieTable.getCellRect(i, 0, true)));
                 return;
@@ -118,7 +144,14 @@ public class Main extends JFrame {
         JOptionPane.showMessageDialog(this, "Movie not found!");
     }
 
+    private void updateTable() {
+        tableModel.setRowCount(0);
+        for (Movie movie : movies) {
+            tableModel.addRow(new Object[]{movie.title, movie.genre});
+        }
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Main().setVisible(true));
+        new Main().setVisible(true);
     }
 }
