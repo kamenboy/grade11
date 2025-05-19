@@ -32,7 +32,7 @@ class Employee implements Serializable{
             try{
                 while(true){
                     Employee emp = (Employee) read.readObject();
-                    System.out.println("id: " + emp.employeeID + " | name: " + emp.name + " | age: " + emp.age);
+                    System.out.println("Id: " + emp.employeeID + " | Name: " + emp.name + " | Age: " + emp.age);
                 }
             }
             catch(EOFException e){};
