@@ -1,28 +1,26 @@
-public class Song {
-    private String title;
-    private String artist;
-    private int duration;
+public class Song extends MediaItem {
     private String genre;
 
     public Song(String title, String artist, int duration, String genre) {
-        this.title = title;
-        this.artist = artist;
-        this.duration = duration;
+        super(title, artist, duration);
         this.genre = genre;
     }
 
-    public String getTitle() { return title; }
-    public String getArtist() { return artist; }
-    public int getDuration() { return duration; }
-    public String getGenre() { return genre; }
+    public String getGenre() {
+        return genre;
+    }
 
-    public void setTitle(String title) { this.title = title; }
-    public void setArtist(String artist) { this.artist = artist; }
-    public void setDuration(int duration) { this.duration = duration; }
-    public void setGenre(String genre) { this.genre = genre; }
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
 
+    @Override
+    public String getDetails() {
+        return title + " - " + artist + " (" + getFormattedDuration() + ")";
+    }
+
+    @Override
     public String toString() {
-        return title + " - " + artist + " (" + duration + "s)";
+        return getDetails();
     }
 }
-
